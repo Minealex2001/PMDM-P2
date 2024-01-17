@@ -21,22 +21,17 @@ void main(List<String> args) {
       } else if (args[0] == 'infoComarca'){
 
         //Comprobamos si el nombre de la comarca tiene más de una palabra
-        if (args.length == 3){
-
-          //Si tiene más de una palabra, las juntamos en una sola
-          String comarca = args[1] + ' ' + args[2];
-          getInfoComarca(comarca);
-        }else if (args.length == 4){
-          String comarca = args[1] + ' ' + args[2] + ' ' + args[3];
-          getInfoComarca(comarca);
-
+        if (args.length >= 3){
+          for (int i = 2; i < args.length; i++){
+            args[1] = args[1] + ' ' + args[i];
+          }
           //Si solo tiene una palabra, llamamos a la función getInfoComarca
-        }else
+        }
           getInfoComarca(args[1]);
       } else {
 
         // Si el primer argumento no es 'comarcas' o 'infoComarca', mostramos un mensaje de error
-        print('El primer argumento debe ser "comarcas" o "infocomarca"');
+        print('El primer argumento debe ser "comarcas" o "infoComarca"');
         return;
       }
       return;
@@ -57,11 +52,15 @@ void getInfoComarca(String comarca) async {
   if (response.statusCode == 200) {
     Map<String, dynamic> infoComarca;
     try {
+      // Decodificamos la respuesta
       infoComarca = jsonDecode(response.body);
     } catch (e) {
+
+      // Si no se ha podido decodificar la respuesta, mostramos un mensaje de error
       throw Exception('Error al decodificar la respuesta: $e');
     }
 
+    // Creamos una instancia de Comarca con la información obtenida
     Comarca comarca = Comarca(
       nombre: infoComarca['comarca'],
       capital: infoComarca['capital'],
@@ -72,8 +71,10 @@ void getInfoComarca(String comarca) async {
       longitud: infoComarca['longitud'],
     );
 
+    // Imprimimos la información de la comarca
     print(comarca);
   } else {
+    // Si la petición no ha sido correcta, mostramos un mensaje de error
     throw Exception('Error al obtener la información de la comarca, código de estado HTTP: ${response.statusCode}');
   }
 }
@@ -111,6 +112,7 @@ void getComarcas(String provincia) async {
   }
 }
 
+// Definimos la clase Comarca
 class Comarca {
   String nombre;
   String capital;
@@ -120,6 +122,7 @@ class Comarca {
   double latitud;
   double longitud;
 
+  // Constructor de la clase Comarca
   Comarca({
     required this.nombre,
     required this.capital,
@@ -130,6 +133,7 @@ class Comarca {
     required this.longitud,
   });
 
+  // Sobreescribimos el método toString para imprimir la información de la comarca de manera ordenada
   @override
   String toString() {
     return 'Comarca: $nombre\n'
