@@ -55,30 +55,25 @@ void getInfoComarca(String comarca) async {
   // Comprobamos si la petición ha sido correcta
   var response = await http.get(url);
   if (response.statusCode == 200) {
-
-    // Si la petición ha sido correcta, mostramos la información de la comarca
     Map<String, dynamic> infoComarca;
     try {
-
-      // Decodificamos la respuesta
       infoComarca = jsonDecode(response.body);
     } catch (e) {
-
-      // Si no se ha podido decodificar la respuesta, mostramos un mensaje de error
       throw Exception('Error al decodificar la respuesta: $e');
     }
 
-    // Mostramos la información de la comarca
-    print('Comarca: ${infoComarca['comarca']}');
-    print('Capital: ${infoComarca['capital']}');
-    print('Población: ${infoComarca['poblacio']}');
-    print('Imagen: ${infoComarca['img']}');
-    print('Descripción: ${infoComarca['desc']}');
-    print('Latitud: ${infoComarca['latitud']}');
-    print('Longitud: ${infoComarca['longitud']}');
-  } else {
+    Comarca comarca = Comarca(
+      nombre: infoComarca['comarca'],
+      capital: infoComarca['capital'],
+      poblacion: infoComarca['poblacio'],
+      imagen: infoComarca['img'],
+      descripcion: infoComarca['desc'],
+      latitud: infoComarca['latitud'],
+      longitud: infoComarca['longitud'],
+    );
 
-    // Si la petición no ha sido correcta, mostramos un mensaje de error
+    print(comarca);
+  } else {
     throw Exception('Error al obtener la información de la comarca, código de estado HTTP: ${response.statusCode}');
   }
 }
@@ -113,5 +108,36 @@ void getComarcas(String provincia) async {
 
     // Si la petición no ha sido correcta, mostramos un mensaje de error
     throw Exception('Error al obtener las comarcas, código de estado HTTP: ${response.statusCode}');
+  }
+}
+
+class Comarca {
+  String nombre;
+  String capital;
+  String poblacion;
+  String imagen;
+  String descripcion;
+  double latitud;
+  double longitud;
+
+  Comarca({
+    required this.nombre,
+    required this.capital,
+    required this.poblacion,
+    required this.imagen,
+    required this.descripcion,
+    required this.latitud,
+    required this.longitud,
+  });
+
+  @override
+  String toString() {
+    return 'Comarca: $nombre\n'
+        'Capital: $capital\n'
+        'Población: $poblacion\n'
+        'Imagen: $imagen\n'
+        'Descripción: $descripcion\n'
+        'Latitud: $latitud\n'
+        'Longitud: $longitud\n';
   }
 }
